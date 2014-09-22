@@ -1,0 +1,36 @@
+<html>
+<head>
+	<title>Keyboard input in JavaScript</title>	
+</head>
+<body>   
+    <script>
+        
+            var keypressed      = 0;
+            var Game = {};
+            Game.pressedKeys    = [];
+	
+            document.onkeydown = processKeyDownEvent;
+            document.onkeyup = processKeyUpEvent;
+
+            function processKeyDownEvent(e){
+                if(!Game.pressedKeys[e.which]){
+                    Game.pressedKeys[e.which] = 1;
+                    sendInputsToServer(e);
+                }
+            }
+
+            function processKeyUpEvent(e){
+                Game.pressedKeys[e.which] = 0;
+                sendInputsToServer(e);
+            }
+
+            function  sendInputsToServer(e){                
+                var c = String.fromCharCode(e.which);
+                console.log('sending these keys to server: ', Game.pressedKeys);
+            }
+        
+    </script>
+</body>
+</html>
+
+
