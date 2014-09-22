@@ -3,10 +3,10 @@
 	<title>Keyboard inputs in JavaScript</title>
 </head>
 <body>   
-    <script>	
+    <script>
 			var Keyboard = {};
 			Keyboard.pressedKeys = [];
-			Keyboard.allowedKeys = [65, 68, 83, 87];  // process only WASD-keys
+			Keyboard.allowedKeys = [65, 68, 83, 87];  // process only WASD-keys. Leave empty to check all.
 
 			document.onkeydown = processKeyDownEvent;
 			document.onkeyup = processKeyUpEvent;
@@ -26,7 +26,7 @@
 			}
 			
 			function isAllowedKey(key){
-				if(Keyboard.allowedKeys.indexOf(key) != -1){
+				if(Keyboard.allowedKeys.length == 0 || Keyboard.allowedKeys.indexOf(key) != -1){
 				 return true;
 				}
 				return false;
