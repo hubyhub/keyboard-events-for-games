@@ -3,40 +3,48 @@
 	<title>Keyboard inputs in JavaScript</title>
 </head>
 <body>   
-    <script>
+	<script>
 		var Keyboard = {};
+		var Game = {};
 		Keyboard.pressedKeys = [];
-		Keyboard.allowedKeys = [65, 68, 83, 87];  // process only WASD-keys. Leave empty to check all.
-
+		Keyboard.allowedKeys = [65, 68, 83, 87];  		// WASD-keys. For i18n this should be changeable
+		Game.mappedAction = ['l', 'r', 'd', 'u'];		// map these actions with "allowedKeys"-array
+		Game.currentActions = [];
 		document.onkeydown = processKeyDownEvent;
 		document.onkeyup = processKeyUpEvent;
 
 		function processKeyDownEvent(e){
 			if(!Keyboard.pressedKeys[e.which] && isAllowedKey(e.which) ){
 				Keyboard.pressedKeys[e.which] = 1;
-				sendInputsToServer(e);
+				sendCurrentActionsToServer()
 			}
 		}
 
 		function processKeyUpEvent(e){
 			if(isAllowedKey(e.which) ){
 				Keyboard.pressedKeys[e.which] = 0;
-				sendInputsToServer(e);
+				sendCurrentActionsToServer()
 			}
 		}
 		
 		function isAllowedKey(key){
-			if(Keyboard.allowedKeys.length == 0 || Keyboard.allowedKeys.indexOf(key) != -1){
+			if(Keyboard.allowedKeys.indexOf(key) != -1){
 			 return true;
 			}
 			return false;
 		}
+		
+		function sendCurrentActionsToServer(){
+			for(var i=0; i < Keyboard.allowedKeys.length; i++){
+				if(Keyboard.pressedKeys[Keyboard.allowedKeys[i]]){
+					Game.currentActions.push(Game.mappedAction[i]);
+				}	
+			}
+			console.log("Sending these actions to the server: ", Game.currentActions);
+			Game.currentActions = []; 	// clear array
+		}
 
-		function  sendInputsToServer(e){                
-			var c = String.fromCharCode(e.which);
-			console.log('sending these keys to server: ', Keyboard.pressedKeys);
-		}        
-    </script>
+	</script>
 </body>
 </html>
 
