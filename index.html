@@ -40,8 +40,13 @@
 					Game.currentActions.push(Game.mappedAction[i]);
 				}	
 			}
+			// if all keys have been released, send "null" instead of empty array
+			if(Game.currentActions.length == 0){
+				Game.currentActions.push("null");
+			}
+			
 			console.log("Sending these actions to the server: ", Game.currentActions);
-			Game.currentActions = []; 	// clear array
+			Game.currentActions = [];  // clear array
 		}
 
 	</script>
