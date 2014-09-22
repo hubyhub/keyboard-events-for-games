@@ -4,38 +4,38 @@
 </head>
 <body>   
     <script>
-			var Keyboard = {};
-			Keyboard.pressedKeys = [];
-			Keyboard.allowedKeys = [65, 68, 83, 87];  // process only WASD-keys. Leave empty to check all.
+		var Keyboard = {};
+		Keyboard.pressedKeys = [];
+		Keyboard.allowedKeys = [65, 68, 83, 87];  // process only WASD-keys. Leave empty to check all.
 
-			document.onkeydown = processKeyDownEvent;
-			document.onkeyup = processKeyUpEvent;
+		document.onkeydown = processKeyDownEvent;
+		document.onkeyup = processKeyUpEvent;
 
-			function processKeyDownEvent(e){
-				if(!Keyboard.pressedKeys[e.which] && isAllowedKey(e.which) ){
-					Keyboard.pressedKeys[e.which] = 1;
-					sendInputsToServer(e);
-				}
+		function processKeyDownEvent(e){
+			if(!Keyboard.pressedKeys[e.which] && isAllowedKey(e.which) ){
+				Keyboard.pressedKeys[e.which] = 1;
+				sendInputsToServer(e);
 			}
+		}
 
-			function processKeyUpEvent(e){
-				if(isAllowedKey(e.which) ){
-					Keyboard.pressedKeys[e.which] = 0;
-					sendInputsToServer(e);
-				}
+		function processKeyUpEvent(e){
+			if(isAllowedKey(e.which) ){
+				Keyboard.pressedKeys[e.which] = 0;
+				sendInputsToServer(e);
 			}
-			
-			function isAllowedKey(key){
-				if(Keyboard.allowedKeys.length == 0 || Keyboard.allowedKeys.indexOf(key) != -1){
-				 return true;
-				}
-				return false;
+		}
+		
+		function isAllowedKey(key){
+			if(Keyboard.allowedKeys.length == 0 || Keyboard.allowedKeys.indexOf(key) != -1){
+			 return true;
 			}
+			return false;
+		}
 
-			function  sendInputsToServer(e){                
-				var c = String.fromCharCode(e.which);
-				console.log('sending these keys to server: ', Keyboard.pressedKeys);
-			}        
+		function  sendInputsToServer(e){                
+			var c = String.fromCharCode(e.which);
+			console.log('sending these keys to server: ', Keyboard.pressedKeys);
+		}        
     </script>
 </body>
 </html>
