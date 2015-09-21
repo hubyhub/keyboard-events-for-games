@@ -1,53 +1,82 @@
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Keyboard inputs in JavaScript</title>
+	<title>Keyboard Polling in JavaScript</title>
 </head>
 <body>   
 	<script>
-		var Keyboard = {};
-		var Game = {};
-		Keyboard.pressedKeys = [];
-		Keyboard.allowedKeys = [65, 68, 83, 87];  		// WASD-keys. For i18n this should be changeable
-		Game.mappedAction = ['l', 'r', 'd', 'u'];		// map these actions with "allowedKeys"-array
-		Game.currentActions = [];
-		document.onkeydown = processKeyDownEvent;
-		document.onkeyup = processKeyUpEvent;
-
-		function processKeyDownEvent(e){
-			if(!Keyboard.pressedKeys[e.which] && isAllowedKey(e.which) ){
-				Keyboard.pressedKeys[e.which] = 1;
-				sendCurrentActionsToServer()
-			}
-		}
-
-		function processKeyUpEvent(e){
-			if(isAllowedKey(e.which) ){
-				Keyboard.pressedKeys[e.which] = 0;
-				sendCurrentActionsToServer()
-			}
-		}
 		
-		function isAllowedKey(key){
-			if(Keyboard.allowedKeys.indexOf(key) != -1){
-			 return true;
-			}
-			return false;
-		}
-		
-		function sendCurrentActionsToServer(){
-			for(var i=0; i < Keyboard.allowedKeys.length; i++){
-				if(Keyboard.pressedKeys[Keyboard.allowedKeys[i]]){
-					Game.currentActions.push(Game.mappedAction[i]);
-				}	
-			}
-			// if all keys have been released, send "null" instead of empty array
-			if(Game.currentActions.length == 0){
-				Game.currentActions.push("null");
-			}
+	// start /stop listeners
+	// allowedKeys-mappings as json	
+	// possibility to add own callback function on key-event
+	// X- browser (Keyboard.keys)
+	// capsulate
+
+
+(function(window, undefined){
+
+	var Keyboard = {};
+	
+	Keyboard.Keys = {		// WASD-keys. For i18n this should be customizable
+		65 : "l",
+		68 : "r",
+		83 : "d",
+		87 : "u",
+		17 : "Ctrl"
+	};
+	Keyboard.pressedKeys = [];
+	Keyboard.currentActions = []; 
+	
+	document.onkeydown   = processKeyDownEvent;
+	document.onkeyup 	 = processKeyUpEvent;
+
+	function processKeyDownEvent(e){					
+		e = e || window.event;
+		var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+		if(!Keyboard.pressedKeys[charCode] && isTrackedKey(charCode) ){
 			
-			console.log("Sending these actions to the server: ", Game.currentActions);
-			Game.currentActions = [];  // clear array
+			Keyboard.pressedKeys[charCode] = 1;
+			aggregateKeys()
 		}
+	}
+
+	function processKeyUpEvent(e){			
+		e = e || window.event;
+		var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+		if(isTrackedKey(charCode) ){
+			Keyboard.pressedKeys[charCode] = 0;
+			aggregateKeys()
+		}
+	}
+	
+	function isTrackedKey(key){
+		if(Keyboard.Keys[key] ){
+		 return true;
+		}
+		return false;
+	}
+
+	function aggregateKeys(){
+		Keyboard.currentActions = [];  // clear array
+		var keyCode;
+		//Iterate through object
+		for(var i=0; i < Object.keys(Keyboard.Keys).length; i++){
+			keyCode = Object.keys(Keyboard.Keys)[i];
+			if(Keyboard.pressedKeys[ keyCode ]){
+				Keyboard.currentActions.push( Keyboard.Keys[ keyCode ]);
+			}	
+		}
+		// when all keys have been released, send "null" instead of empty array
+		if(Keyboard.currentActions.length == 0){
+			Keyboard.currentActions.push("null");
+		}
+		
+		console.log("Sending these actions to the server: ", Keyboard.currentActions);
+		
+	}
+
+})(this);
+		
 
 	</script>
 </body>
